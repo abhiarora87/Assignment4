@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Automobile Inventory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model IEnumerable<Assignment4.Models.EF_Models.Automobile>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Model Year
+            </th>
+            <th>
+                Engine Size
+            </th>
+            <th>
+                Engine Cylinder Count
+            </th>
+            <th>
+                Manufacturer Name
+            </th>
+            <th>
+                Category Name
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.model_year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.engine_size)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.engine_cylinder_count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.manufacturer_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.category_name)
+                </td>
+            </tr>
+        }
+
+        @{
+            Model.Count();
+        }
+    </tbody>
+</table>
+<tr>
+    <td>
+        <a id="dbopt" asp-controller="Home" asp-action="PopulateAutomobiles"><img src="~/img/save.jpg" /></a>
+    </td>
+</tr>
+
+
+
+
+
