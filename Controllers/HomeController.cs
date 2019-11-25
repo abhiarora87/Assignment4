@@ -89,7 +89,8 @@ namespace Assignment4.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<Salesperson> person = dbContext.Salesperson.ToList();
+            return View(person);
         }
 
         public IActionResult About()
@@ -111,16 +112,25 @@ namespace Assignment4.Controllers
         
         public IActionResult PopulateAutomobiles()
         {
-            // Retrieve the AUTOMOBILE that were saved in the INVENTORY method
-            List<Automobile> automobiles = JsonConvert.DeserializeObject<List<Automobile>>(TempData["Automobiles"].ToString());
+            bool flag = false;
+            List<Automobile> automobiles = new List<Automobile>();
 
-            foreach(Automobile automobile in automobiles)
+            if (TempData["Automobiles"] != null)
             {
-                //Database will give PK constraint violation error when trying to insert record with existing PK.
-                //So add vehicle only if it doesnt exist, check existence using id (PK)
-                if (dbContext.Automobiles.Where(c => c.id.Equals(automobile.id)).Count() == 0)
+                // Retrieve the AUTOMOBILE that were saved in the INVENTORY method
+                automobiles = JsonConvert.DeserializeObject<List<Automobile>>(TempData["Automobiles"].ToString());
+            }
+
+            if (automobiles != null)
+            {
+                foreach (Automobile automobile in automobiles)
                 {
-                    dbContext.Automobiles.Add(automobile);
+                    //Database will give PK constraint violation error when trying to insert record with existing PK.
+                    //So add vehicle only if it doesnt exist, check existence using id (PK)
+                    if (dbContext.Automobiles.Where(c => c.id.Equals(automobile.id)).Count() == 0)
+                    {
+                        dbContext.Automobiles.Add(automobile);
+                    }
                 }
             }
             using (var transaction = dbContext.Database.BeginTransaction())
@@ -129,9 +139,18 @@ namespace Assignment4.Controllers
                 dbContext.SaveChanges();
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Automobile_DB.dbo.Automobiles OFF;");
                 transaction.Commit();
+                flag = true;
             }
-            ViewBag.dbSuccessComp = 1;
-            return View("Index", automobiles);
+
+            if (flag == true)
+            {
+                ViewBag.SuccessMessage = "Save Successful";
+            }
+            else
+            {
+                ViewBag.SuccessMessage = "Already saved";
+            }
+            return View("Inventory", automobiles);
         }
 
         public IActionResult VehicleSales() { 
@@ -166,12 +185,6 @@ namespace Assignment4.Controllers
             return View(vehicleList);
 
             //return View(groupedCustomerList);
-        }
-
-        public IActionResult VehicleSold()
-        {
-            List<Vehicle> vehicleList = dbContext.Vehicle.ToList();
-            return View(vehicleList);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
