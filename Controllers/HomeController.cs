@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Assignment4.Models;
 using static Assignment4.Models.EF_Models;
+using static Assignment4.Models.Sales_Model;
 using Assignment4.DataAccess;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Drawing;
+using System.Web.Helpers;
 
 namespace Assignment4.Controllers
 {
@@ -130,9 +134,44 @@ namespace Assignment4.Controllers
             return View("Index", automobiles);
         }
 
-        public IActionResult VehicleSales()
+        public IActionResult VehicleSales() { 
+        //{
+        //    var result = (from a in dbContext.Sales
+        //                  join b in dbContext.Vehicle on a.vin_number equals b.vin_number
+        //                  select new ChartTables
+        //                  {
+        //                      sales_amt = a.sales_amt,
+        //                      model_year = b.model_year
+        //                  }
+        //                  ).ToList();
+
+        //    var groupedCustomerList = result.GroupBy(u => u.model_year).ToList();
+            //ArrayList xValue = new ArrayList();
+            //ArrayList yValue = new ArrayList();
+
+            //foreach (var item in groupedCustomerList)
+            //{
+            //    xValue.Add(item.Key);
+            //    yValue.Add(item.Count());
+            //}
+
+            //    var key = new Chart(width: 300, height: 300)
+            //    .AddTitle("Sales")
+            //    .AddSeries(chartType: "Pie",
+            //    name: "Some Name",
+            //    xValue: xValue,
+            //    yValues: yValue);
+            //    return File(key.ToWebImage().GetBytes(), "image/jpeg");
+            List<Vehicle> vehicleList = dbContext.Vehicle.ToList();
+            return View(vehicleList);
+
+            //return View(groupedCustomerList);
+        }
+
+        public IActionResult VehicleSold()
         {
-            return View();
+            List<Vehicle> vehicleList = dbContext.Vehicle.ToList();
+            return View(vehicleList);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
